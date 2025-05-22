@@ -1,0 +1,716 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" type="image/svg+xml">
+    <title>Manzi Shopping</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap"
+        rel="stylesheet">
+    <link rel="stylesheet" href="../static/css/menu.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Poppins', sans-serif;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        .navbar {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: var(--text-primary) !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            margin: 0 0.25rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color) !important;
+            transform: translateY(-1px);
+        }
+
+        .cart-count {
+            background: var(--primary-color);
+            color: white !important;
+            border-radius: 50%;
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        /* Hero sections styling */
+        .hero {
+            padding: 80px 40px;
+            background: linear-gradient(135deg, rgba(255, 255, 255, 0.9) 0%, rgba(247, 250, 252, 0.9) 100%);
+        }
+
+        .hero h1 {
+            font-size: 3.5rem;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 30px;
+            line-height: 1.2;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hero p {
+            font-size: 1.3rem;
+            color: #5a6c7d;
+            margin: 30px 0;
+            line-height: 1.8;
+            font-weight: 400;
+        }
+
+        .content-wrapper {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 100vh;
+            padding: 0;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            position: relative;
+        }
+
+        .content-wrapper:nth-child(even) {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        }
+
+        .content-wrapper:nth-child(even) .hero {
+            background: rgba(255, 255, 255, 0.1);
+            backdrop-filter: blur(10px);
+        }
+
+        .content-wrapper:nth-child(even) .hero h1 {
+            color: white;
+            background: linear-gradient(135deg, #ffffff 0%, #f8f9fa 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .content-wrapper:nth-child(even) .hero p {
+            color: rgba(255, 255, 255, 0.9);
+        }
+
+        .content-wrapper .image-section {
+            flex: 1;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+        }
+
+        .content-wrapper .text-section {
+            flex: 1;
+            z-index: 2;
+        }
+
+        /* Carousel enhancements */
+        .carousel {
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+            max-width: 600px;
+            margin: 0 auto;
+        }
+
+        .carousel-inner img {
+            height: 400px;
+            object-fit: cover;
+            transition: transform 0.3s ease;
+        }
+
+        .carousel:hover .carousel-inner img {
+            transform: scale(1.05);
+        }
+
+        .carousel-indicators {
+            bottom: 20px;
+        }
+
+        .carousel-indicators li {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background-color: rgba(255, 255, 255, 0.6);
+            border: 2px solid rgba(255, 255, 255, 0.8);
+        }
+
+        .carousel-indicators .active {
+            background-color: #ffffff;
+            transform: scale(1.2);
+        }
+
+        /* Floating elements */
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            opacity: 0.1;
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-shape:nth-child(1) {
+            width: 100px;
+            height: 100px;
+            background: #667eea;
+            top: 10%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-shape:nth-child(2) {
+            width: 150px;
+            height: 150px;
+            background: #764ba2;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-shape:nth-child(3) {
+            width: 80px;
+            height: 80px;
+            background: #f093fb;
+            bottom: 20%;
+            left: 5%;
+            animation-delay: 4s;
+        }
+
+        @keyframes float {
+
+            0%,
+            100% {
+                transform: translateY(0px) rotate(0deg);
+            }
+
+            33% {
+                transform: translateY(-20px) rotate(5deg);
+            }
+
+            66% {
+                transform: translateY(10px) rotate(-5deg);
+            }
+        }
+
+        /* Responsive design */
+        @media (max-width: 768px) {
+            .content-wrapper {
+                flex-direction: column;
+                min-height: auto;
+                padding: 40px 0;
+            }
+
+            .hero {
+                padding: 40px 20px;
+                text-align: center;
+            }
+
+            .hero h1 {
+                font-size: 2.5rem;
+            }
+
+            .hero p {
+                font-size: 1.1rem;
+            }
+
+            .carousel-inner img {
+                height: 300px;
+            }
+
+            .floating-shape {
+                display: none;
+            }
+        }
+
+        /* Enhanced button styles */
+        .btn-custom {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            color: white;
+            padding: 15px 35px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            border-radius: 50px;
+            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
+            transition: all 0.3s ease;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+
+        .btn-custom:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 15px 35px rgba(102, 126, 234, 0.4);
+            color: white;
+        }
+
+        /* Loading animation */
+        .loading-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            opacity: 1;
+            transition: opacity 0.5s ease;
+        }
+
+        .loading-overlay.fade-out {
+            opacity: 0;
+            pointer-events: none;
+        }
+
+        .loader {
+            width: 50px;
+            height: 50px;
+            border: 4px solid rgba(255, 255, 255, 0.3);
+            border-top: 4px solid #ffffff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Scroll indicator */
+        .scroll-indicator {
+            position: fixed;
+            top: 0;
+            left: 0;
+            height: 4px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            z-index: 1000;
+            transition: width 0.1s ease;
+        }
+
+        /* Login/Logout icon styles */
+        .auth-icon {
+            font-size: 1.2rem;
+            padding: 8px 12px;
+            position: relative;
+        }
+
+        .auth-icon .tooltip-text {
+            visibility: hidden;
+            width: 80px;
+            background-color: #555;
+            color: #fff;
+            text-align: center;
+            border-radius: 6px;
+            padding: 5px;
+            position: absolute;
+            z-index: 1;
+            bottom: 125%;
+            left: 50%;
+            margin-left: -40px;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .auth-icon:hover .tooltip-text {
+            visibility: visible;
+            opacity: 1;
+        }
+
+        /* Add this to your existing CSS */
+        .cart-icon {
+            position: relative;
+            display: inline-block;
+        }
+
+        .cart-badge {
+            position: absolute;
+            top: -8px;
+            right: -8px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            border-radius: 50%;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+        }
+
+        .cart-icon:hover .cart-badge {
+            transform: scale(1.1);
+            box-shadow: 0 3px 8px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Remove the old cart-count style if it exists */
+        .cart-count {
+            display: none;
+        }
+    </style>
+</head>
+
+<body>
+    <!-- Loading overlay -->
+    <div class="loading-overlay" id="loadingOverlay">
+        <div class="loader"></div>
+    </div>
+
+    <!-- Scroll indicator -->
+    <div class="scroll-indicator" id="scrollIndicator"></div>
+
+    <nav class="navbar navbar-expand-lg navbar-light fixed-top" style="background-color: #f8f9fa;">
+        <div class="container">
+            <a class="navbar-brand" href="#">
+                <img th:src="@{/images/logo2.jpg}" src="../static/images/logoo.png" alt="Logo" />
+            </a>
+            <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarSupportedContent"
+                aria-controls="navbarSupportedContent" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+
+            <div class="collapse navbar-collapse" id="navbarSupportedContent">
+                <ul class="navbar-nav ml-auto">
+                    <li class="nav-item active">
+                        <a class="nav-link active" th:href="@{/}" href="#"><i class="fas fa-home"></i> Home</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" th:href="@{/shop}" href="#"><i class="fas fa-store"></i> Shop</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" th:href="@{/admin}" href="#"><i class="fas fa-user-cog"></i> Admin</a>
+                    </li>
+                    <li class="nav-item active">
+                        <a class="nav-link" th:href="@{/orderHistory}" href="#"><i class="fas fa-history"></i>
+                            Orders</a>
+                    </li>
+
+                    <li class="nav-item active">
+                        <a class="nav-link cart-icon" th:href="@{/cart}" href="#">
+                            <i class="fas fa-shopping-cart"></i>
+                            <span class="cart-badge" th:text="${cartCount}">0</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link auth-icon" sec:authorize="isAnonymous()" th:href="@{/login}" href="#">
+                            <i class="fas fa-sign-in-alt"></i>
+                            <span class="tooltip-text">Login</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link auth-icon" sec:authorize="isAuthenticated()" th:href="@{/logout}" href="#">
+                            <i class="fas fa-sign-out-alt"></i>
+                            <span class="tooltip-text">Logout</span>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Content Wrapper with Carousel - Perfumes -->
+    <div class="content-wrapper">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+
+        <div class="image-section">
+            <div id="carouselExampleIndicators1" class="carousel slide" data-ride="carousel" data-interval="4000">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators1" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators1" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators1" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators1" data-slide-to="3"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" th:src="@{/imageProduct/dd(1).jpeg}"
+                            src="../static/imageProduct/dd(1).jpeg" alt="Premium Perfume Collection">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/dd(2).jpeg}"
+                            src="../static/imageProduct/dd(2).jpeg" alt="Luxury Fragrances">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/dd.jpeg}"
+                            src="../static/imageProduct/dd.jpeg" alt="Exclusive Perfumes">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/download (2).jpeg}"
+                            src="../static/imageProduct/download (2).jpeg" alt="Designer Fragrances">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-section hero">
+            <div>
+                <h1>Perfumes of All Kinds for You</h1>
+                <p>Discover our exquisite range of perfumes, crafted to perfection. Elevate your senses with enchanting
+                    fragrances that captivate and leave a lasting impression. Experience luxury in every spritz.</p>
+                <button class="btn btn-custom">Explore Collection</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Watches Section -->
+    <div class="content-wrapper">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+
+        <div class="text-section hero">
+            <div>
+                <h1>Classic Watches for Every Occasion</h1>
+                <p>Timeless elegance meets modern sophistication. Our collection of classic watches combines traditional
+                    craftsmanship with contemporary design, ensuring you make a statement wherever you go.</p>
+                <button class="btn btn-custom">View Timepieces</button>
+            </div>
+        </div>
+        <div class="image-section">
+            <div id="carouselExampleIndicators2" class="carousel slide" data-ride="carousel" data-interval="4000">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators2" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators2" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators2" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators2" data-slide-to="3"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" th:src="@{/imageProduct/download (10).jpeg}"
+                            src="../static/imageProduct/download (10).jpeg" alt="Classic Watch Collection">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/images (12).jpeg}"
+                            src="../static/imageProduct/images (12).jpeg" alt="Luxury Timepieces">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/download (7).jpeg}"
+                            src="../static/imageProduct/download (7).jpeg" alt="Designer Watches">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/download (8).jpeg}"
+                            src="../static/imageProduct/download (8).jpeg" alt="Premium Watches">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Jeans Section -->
+    <div class="content-wrapper">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+
+        <div class="image-section">
+            <div id="carouselExampleIndicators3" class="carousel slide" data-ride="carousel" data-interval="4000">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators3" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators3" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators3" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators3" data-slide-to="3"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" th:src="@{/imageProduct/images (1).jpeg}"
+                            src="../static/imageProduct/images (1).jpeg" alt="Premium Jeans Collection">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/images (6).jpeg}"
+                            src="../static/imageProduct/images (6).jpeg" alt="Designer Denim">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/images (3).jpeg}"
+                            src="../static/imageProduct/images (3).jpeg" alt="Trendy Jeans">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/image.jpeg}"
+                            src="../static/imageProduct/image.jpeg" alt="Fashion Jeans">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-section hero">
+            <div>
+                <h1>Premium Jeans Collection</h1>
+                <p>Crafted for comfort and style, our jeans offer a perfect fit and durable quality. Elevate your
+                    wardrobe with trendy designs and timeless classics that suit every lifestyle.</p>
+                <button class="btn btn-custom">Shop Denim</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Shirts Section -->
+    <div class="content-wrapper">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+
+        <div class="text-section hero">
+            <div>
+                <h1>Shirts That Fit Perfectly</h1>
+                <p>Upgrade your wardrobe with our premium collection of shirts! Unmatched comfort, stylish designs, and
+                    top-notch quality. Perfect for any occasion, from casual days to formal events.</p>
+                <button class="btn btn-custom">Browse Shirts</button>
+            </div>
+        </div>
+        <div class="image-section">
+            <div id="carouselExampleIndicators4" class="carousel slide" data-ride="carousel" data-interval="4000">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators4" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators4" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators4" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators4" data-slide-to="3"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" th:src="@{/imageProduct/download.jpeg}"
+                            src="../static/imageProduct/download.jpeg" alt="Premium Shirts">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/ima.jpeg}"
+                            src="../static/imageProduct/ima.jpeg" alt="Designer Shirts">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/images (7).jpeg}"
+                            src="../static/imageProduct/images (7).jpeg" alt="Casual Shirts">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/images.jpeg}"
+                            src="../static/imageProduct/images.jpeg" alt="Formal Shirts">
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Final Call to Action Section -->
+    <div class="content-wrapper">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+
+        <div class="image-section">
+            <div id="carouselExampleIndicators5" class="carousel slide" data-ride="carousel" data-interval="4000">
+                <ol class="carousel-indicators">
+                    <li data-target="#carouselExampleIndicators5" data-slide-to="0" class="active"></li>
+                    <li data-target="#carouselExampleIndicators5" data-slide-to="1"></li>
+                    <li data-target="#carouselExampleIndicators5" data-slide-to="2"></li>
+                    <li data-target="#carouselExampleIndicators5" data-slide-to="3"></li>
+                </ol>
+                <div class="carousel-inner">
+                    <div class="carousel-item active">
+                        <img class="d-block w-100" th:src="@{/imageProduct/download (4).jpeg}"
+                            src="../static/imageProduct/download (4).jpeg" alt="Shop Collection">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/download (9).jpeg}"
+                            src="../static/imageProduct/download (9).jpeg" alt="Premium Products">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/download.jpeg}"
+                            src="../static/imageProduct/download.jpeg" alt="Quality Items">
+                    </div>
+                    <div class="carousel-item">
+                        <img class="d-block w-100" th:src="@{/imageProduct/images (2).jpeg}"
+                            src="../static/imageProduct/images (2).jpeg" alt="Fashion Collection">
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="text-section hero">
+            <div>
+                <h1>Your Style Journey Starts Here</h1>
+                <p>Experience the perfect blend of luxury, comfort, and style. From exquisite perfumes to premium
+                    fashion pieces, we curate the finest collection just for you. Transform your wardrobe and elevate
+                    your lifestyle with our exclusive range.</p>
+                <button class="btn btn-custom">Start Shopping</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+
+    <script>
+        // Loading animation
+        window.addEventListener('load', function () {
+            setTimeout(() => {
+                document.getElementById('loadingOverlay').classList.add('fade-out');
+            }, 1000);
+        });
+
+        // Scroll indicator
+        window.addEventListener('scroll', function () {
+            const scrollTop = document.documentElement.scrollTop || document.body.scrollTop;
+            const scrollHeight = document.documentElement.scrollHeight - document.documentElement.clientHeight;
+            const scrollPercent = (scrollTop / scrollHeight) * 100;
+            document.getElementById('scrollIndicator').style.width = scrollPercent + '%';
+        });
+
+        // Smooth scrolling for anchor links
+        document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+            anchor.addEventListener('click', function (e) {
+                e.preventDefault();
+                const target = document.querySelector(this.getAttribute('href'));
+                if (target) {
+                    target.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+    </script>
+</body>
+
+</html>

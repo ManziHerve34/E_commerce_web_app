@@ -1,0 +1,582 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+    xmlns:sec="http://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+
+<head>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" type="image/svg+xml">
+    <title>Professional Shop - Product Details</title>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+        content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+        integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+        integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #2563eb;
+            --primary-hover: #1d4ed8;
+            --secondary-color: #64748b;
+            --accent-color: #f8fafc;
+            --border-color: #e2e8f0;
+            --text-primary: #1e293b;
+            --text-secondary: #64748b;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+            --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+            --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+            --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            background-color: #f8fafc;
+            color: var(--text-primary);
+            line-height: 1.6;
+            font-weight: 400;
+            padding-top: 80px;
+        }
+
+        /* Enhanced Navigation - Matching Shop Page */
+        .navbar {
+            background: linear-gradient(135deg, #ffffff 0%, #f8fafc 100%);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid var(--border-color);
+            box-shadow: var(--shadow-sm);
+            padding: 1rem 0;
+        }
+
+        .navbar-brand img {
+            height: 40px;
+            width: auto;
+            filter: drop-shadow(0 2px 4px rgba(0, 0, 0, 0.1));
+        }
+
+        .navbar-nav .nav-link {
+            font-weight: 500;
+            color: var(--text-primary) !important;
+            padding: 0.75rem 1rem !important;
+            border-radius: 8px;
+            transition: all 0.2s ease;
+            margin: 0 0.25rem;
+        }
+
+        .navbar-nav .nav-link:hover {
+            background-color: var(--accent-color);
+            color: var(--primary-color) !important;
+            transform: translateY(-1px);
+        }
+
+        .cart-count {
+            background: var(--primary-color);
+            color: white !important;
+            border-radius: 50%;
+            padding: 0.25rem 0.5rem !important;
+            font-size: 0.8rem;
+            font-weight: 600;
+            min-width: 24px;
+            text-align: center;
+        }
+
+        /* Main Container */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem 1rem;
+        }
+
+        /* Breadcrumb */
+        .breadcrumb-container {
+            background: white;
+            padding: 1rem 2rem;
+            border-radius: 12px;
+            margin-bottom: 2rem;
+            box-shadow: var(--shadow-sm);
+            border: 1px solid var(--border-color);
+        }
+
+        .breadcrumb {
+            background: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .breadcrumb-item {
+            color: var(--text-secondary);
+            font-weight: 500;
+        }
+
+        .breadcrumb-item.active {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .breadcrumb-item a {
+            color: var(--text-secondary);
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        .breadcrumb-item a:hover {
+            color: var(--primary-color);
+        }
+
+        /* Product Details Card */
+        .product-details-card {
+            background: white;
+            border-radius: 24px;
+            box-shadow: var(--shadow-lg);
+            overflow: hidden;
+            border: 1px solid var(--border-color);
+            position: relative;
+        }
+
+        .product-details-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 6px;
+            background: linear-gradient(90deg, var(--primary-color), var(--primary-hover));
+        }
+
+        .product-content {
+            padding: 3rem;
+        }
+
+        /* Product Image Section */
+        .product-image-section {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 2rem;
+            background: var(--accent-color);
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .product-image {
+            max-width: 100%;
+            max-height: 400px;
+            width: auto;
+            height: auto;
+            border-radius: 16px;
+            transition: transform 0.4s ease;
+            box-shadow: var(--shadow-md);
+        }
+
+        .product-image:hover {
+            transform: scale(1.05);
+        }
+
+        .image-zoom-indicator {
+            position: absolute;
+            top: 1rem;
+            right: 1rem;
+            background: rgba(255, 255, 255, 0.9);
+            padding: 0.5rem;
+            border-radius: 50%;
+            color: var(--text-secondary);
+            backdrop-filter: blur(10px);
+        }
+
+        /* Product Info Section */
+        .product-info-section {
+            padding-left: 2rem;
+        }
+
+        .product-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 1rem;
+            line-height: 1.2;
+        }
+
+        .product-category {
+            display: inline-flex;
+            align-items: center;
+            background: linear-gradient(135deg, var(--primary-color), var(--primary-hover));
+            color: white;
+            padding: 0.5rem 1rem;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.875rem;
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .product-price {
+            font-size: 3rem;
+            font-weight: 700;
+            color: var(--success-color);
+            margin-bottom: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .currency {
+            font-size: 2rem;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .product-specs {
+            background: var(--accent-color);
+            padding: 1.5rem;
+            border-radius: 16px;
+            margin-bottom: 2rem;
+            border: 1px solid var(--border-color);
+        }
+
+        .spec-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .spec-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .spec-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--primary-color);
+            color: white;
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.1rem;
+        }
+
+        .spec-content {
+            flex: 1;
+        }
+
+        .spec-label {
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .spec-value {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .product-description {
+            color: var(--text-secondary);
+            font-size: 1.1rem;
+            line-height: 1.7;
+            margin-bottom: 2.5rem;
+            padding: 1.5rem;
+            background: white;
+            border-left: 4px solid var(--primary-color);
+            border-radius: 12px;
+            box-shadow: var(--shadow-sm);
+        }
+
+        /* Add to Cart Button */
+        .add-to-cart-section {
+            background: var(--accent-color);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 1px solid var(--border-color);
+            text-align: center;
+        }
+
+        .add-to-cart-btn {
+            background: linear-gradient(135deg, var(--success-color) 0%, #059669 100%);
+            color: white;
+            border: none;
+            padding: 1.25rem 3rem;
+            border-radius: 16px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 1rem;
+            transition: all 0.3s ease;
+            box-shadow: var(--shadow-md);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .add-to-cart-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: var(--shadow-xl);
+            text-decoration: none;
+            color: white;
+            background: linear-gradient(135deg, #059669 0%, var(--success-color) 100%);
+        }
+
+        .add-to-cart-btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-icon {
+            font-size: 1.3rem;
+        }
+
+        /* Action Buttons */
+        .action-buttons {
+            display: flex;
+            gap: 1rem;
+            margin-top: 1.5rem;
+            justify-content: center;
+        }
+
+        .action-btn {
+            background: white;
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 1rem;
+            border-radius: 12px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 50px;
+            height: 50px;
+        }
+
+        .action-btn:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            transform: translateY(-2px);
+            text-decoration: none;
+        }
+
+        /* Loading Animation */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .product-details-card {
+            animation: fadeInUp 0.6s ease-out;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 992px) {
+            .product-info-section {
+                padding-left: 0;
+                margin-top: 2rem;
+            }
+
+            .product-title {
+                font-size: 2rem;
+            }
+
+            .product-price {
+                font-size: 2.5rem;
+            }
+
+            .product-content {
+                padding: 2rem;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-container {
+                padding: 1rem;
+            }
+
+            .product-title {
+                font-size: 1.75rem;
+            }
+
+            .product-price {
+                font-size: 2rem;
+            }
+
+            .add-to-cart-btn {
+                padding: 1rem 2rem;
+                font-size: 1rem;
+            }
+
+            .product-content {
+                padding: 1.5rem;
+            }
+
+            .breadcrumb-container {
+                padding: 1rem;
+                margin-bottom: 1rem;
+            }
+        }
+
+        /* Back Button */
+        .back-button {
+            background: white;
+            border: 2px solid var(--border-color);
+            color: var(--text-secondary);
+            padding: 0.75rem 1.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            margin-bottom: 1rem;
+        }
+
+        .back-button:hover {
+            border-color: var(--primary-color);
+            color: var(--primary-color);
+            text-decoration: none;
+            transform: translateX(-3px);
+        }
+    </style>
+</head>
+
+<body>
+
+    <div class="main-container">
+        <!-- Breadcrumb -->
+        <div class="breadcrumb-container">
+            <nav aria-label="breadcrumb">
+                <ol class="breadcrumb">
+                    <li class="breadcrumb-item"><a th:href="@{/}"><i class="fas fa-home"></i> Home</a></li>
+                    <li class="breadcrumb-item"><a th:href="@{/shop}"><i class="fas fa-store"></i> Shop</a></li>
+                    <li class="breadcrumb-item active" aria-current="page" th:text="${product.name}">Product Details
+                    </li>
+                </ol>
+            </nav>
+        </div>
+
+        <!-- Back Button -->
+        <a href="javascript:history.back()" class="back-button">
+            <i class="fas fa-arrow-left"></i>
+            Back to Shop
+        </a>
+
+        <!-- Product Details Card -->
+        <div class="product-details-card">
+            <div class="product-content">
+                <div class="row align-items-center">
+                    <div class="col-lg-6">
+                        <div class="product-image-section">
+                            <img class="product-image" th:src="@{${'/imageProduct/' + product.imageName}}"
+                                th:alt="${product.name}" src="/api/placeholder/400/400" alt="Product Image">
+                            <div class="image-zoom-indicator">
+                                <i class="fas fa-search-plus"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-lg-6">
+                        <div class="product-info-section">
+                            <h1 class="product-title" th:text="${product.name}">Premium Product Name</h1>
+
+                            <div class="product-category">
+                                <i class="fas fa-tag mr-2"></i>
+                                <span th:text="${product.category.name}">Category</span>
+                            </div>
+
+                            <div class="product-price">
+                                <span class="currency">RWF</span>
+                                <span
+                                    th:text="${#numbers.formatDecimal(product.price, 0, 'COMMA', 0, 'POINT')}">25,000</span>
+                            </div>
+
+                            <div class="product-specs">
+                                <div class="spec-item">
+                                    <div class="spec-icon">
+                                        <i class="fas fa-weight-hanging"></i>
+                                    </div>
+                                    <div class="spec-content">
+                                        <div class="spec-label">Weight</div>
+                                        <div class="spec-value">
+                                            <span th:text="${product.weight}">500</span> grams
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">
+                                        <i class="fas fa-star"></i>
+                                    </div>
+                                    <div class="spec-content">
+                                        <div class="spec-label">Quality</div>
+                                        <div class="spec-value">Premium Grade</div>
+                                    </div>
+                                </div>
+                                <div class="spec-item">
+                                    <div class="spec-icon">
+                                        <i class="fas fa-truck"></i>
+                                    </div>
+                                    <div class="spec-content">
+                                        <div class="spec-label">Delivery</div>
+                                        <div class="spec-value">Fast & Secure</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="product-description" th:text="${product.description}">
+                                High-quality product with excellent features and outstanding performance. Perfect for
+                                your needs with premium materials and craftsmanship.
+                            </div>
+
+                            <div class="add-to-cart-section">
+                                <a href="" th:href="@{/addToCart/{id}(id = ${product.id})}" class="add-to-cart-btn">
+                                    <i class="fas fa-shopping-cart btn-icon"></i>
+                                    Add to Cart
+                                </a>
+
+                                <div class="action-buttons">
+                                    <a href="#" class="action-btn" title="Add to Wishlist">
+                                        <i class="fas fa-heart"></i>
+                                    </a>
+                                    <a href="#" class="action-btn" title="Share">
+                                        <i class="fas fa-share-alt"></i>
+                                    </a>
+                                    <a href="#" class="action-btn" title="Compare">
+                                        <i class="fas fa-balance-scale"></i>
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+        integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n"
+        crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+        integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+        crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js"
+        integrity="sha384-wfSDF2E50Y2D1uUdj0O3uMBJnjuUD4Ih7YwaYd1iqfktj0Uod8GCExl3Og8ifwB6"
+        crossorigin="anonymous"></script>
+</body>
+
+</html>

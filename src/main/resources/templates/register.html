@@ -1,0 +1,215 @@
+<!doctype html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link rel="icon" href="https://upload.wikimedia.org/wikipedia/commons/a/a7/React-icon.svg" type="image/svg+xml">
+    <title>React App</title>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
+          integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
+    <link rel="stylesheet" href="https://use.fontawesome.com/releases/v5.7.0/css/all.css"
+          integrity="sha384-lZN37f5QGtY3VHgisS14W3ExzMWZxybE1SJSEsQp9S+oqd12jhcu+A56Ebc1zFSJ" crossorigin="anonymous">
+    <style>
+        body {
+            background-color: #f8f9fa;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .home-icon {
+            position: absolute;
+            top: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+            z-index: 1000;
+        }
+
+        .home-icon a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 45px;
+            height: 45px;
+            background-color: #007bff;
+            border-radius: 8px;
+            color: white;
+            text-decoration: none;
+            transition: background-color 0.2s;
+        }
+
+        .home-icon a:hover {
+            background-color: #0056b3;
+            color: white;
+            text-decoration: none;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 8px;
+            padding: 40px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            width: 100%;
+            max-width: 450px;
+            margin-top: 60px;
+        }
+
+        .register-header {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-header h3 {
+            color: #333;
+            font-weight: 600;
+            font-size: 1.8rem;
+            margin-bottom: 8px;
+        }
+
+        .register-header p {
+            color: #666;
+            font-size: 0.95rem;
+            margin: 0;
+        }
+
+        .form-group {
+            margin-bottom: 20px;
+        }
+
+        .form-group label {
+            color: #333;
+            font-weight: 500;
+            margin-bottom: 6px;
+            font-size: 0.9rem;
+        }
+
+        .form-control {
+            border: 1px solid #ddd;
+            border-radius: 6px;
+            padding: 12px 15px;
+            font-size: 0.95rem;
+            transition: border-color 0.2s;
+        }
+
+        .form-control:focus {
+            border-color: #007bff;
+            box-shadow: 0 0 0 0.15rem rgba(0, 123, 255, 0.15);
+        }
+
+        .form-control::placeholder {
+            color: #999;
+        }
+
+        .form-text {
+            color: #666;
+            font-size: 0.8rem;
+            margin-top: 4px;
+        }
+
+        .btn-primary {
+            background-color: #007bff;
+            border-color: #007bff;
+            border-radius: 6px;
+            padding: 12px;
+            font-weight: 500;
+            font-size: 0.95rem;
+            transition: all 0.2s;
+        }
+
+        .btn-primary:hover {
+            background-color: #0056b3;
+            border-color: #0056b3;
+        }
+
+        .links {
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .links span {
+            color: #666;
+            font-size: 0.9rem;
+        }
+
+        .linkControl {
+            color: #007bff;
+            text-decoration: none;
+            font-size: 0.9rem;
+        }
+
+        .linkControl:hover {
+            color: #0056b3;
+            text-decoration: underline;
+        }
+
+        @media (max-width: 576px) {
+            .register-container {
+                padding: 30px 25px;
+                margin-top: 80px;
+            }
+            
+            .home-icon {
+                top: 15px;
+            }
+            
+            .register-header h3 {
+                font-size: 1.6rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Home Icon -->
+    <div class="home-icon">
+        <a href="/" title="Home">
+            <i class="fas fa-home"></i>
+        </a>
+    </div>
+
+    <!-- Register Container -->
+    <div class="register-container">
+        <div class="register-header">
+            <h3>Sign Up Now</h3>
+            <p>Please fill out this form to register</p>
+        </div>
+        
+        <form th:action="@{/register}" th:object="${user}" method="post">
+            <div class="form-group">
+                <label for="firstName">First Name</label>
+                <input type="text" name="firstName" id="firstName" required placeholder="Your Firstname" class="form-control form-control-lg">
+            </div>
+            
+            <div class="form-group">
+                <label for="lastName">Last Name</label>
+                <input type="text" name="lastName" id="lastName" required placeholder="Your Lastname" class="form-control form-control-lg">
+            </div>
+            
+            <div class="form-group">
+                <label for="email">Email address</label>
+                <input type="email" class="form-control form-control-lg" required minlength="6" placeholder="Email" name="email" id="email"
+                       aria-describedby="emailHelp">
+                <small id="emailHelp" class="form-text">We'll never share your email with anyone else.</small>
+            </div>
+            
+            <div class="form-group">
+                <label for="password">Password</label>
+                <input type="password" class="form-control form-control-lg" required placeholder="Password" name="password" id="password">
+            </div>
+            
+            <input type="submit" value="Register" class="btn btn-primary btn-block">
+            
+            <div class="links">
+                <span>Already have an account? <a class="linkControl" href="./login.html" th:href="@{/login}">Login here</a></span>
+            </div>
+        </form>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.4.1.slim.min.js" integrity="sha384-J6qa4849blE2+poT4WnyKhv5vZF5SrPo0iEjwBvKU7imGFAV0wwj1yYfoRSJoZ+n" crossorigin="anonymous"></script>
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js" integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/js/bootstrap.min.js" integrity="sha384-wfSDF2E50Y2D1uUdj0KvQOdRRRQMuXnCKQCjS2LjddmL5zDBmjOFdVhp7XKzlXmwTsJhcfL2" crossorigin="anonymous"></script>
+</body>
+</html>
